@@ -1,9 +1,8 @@
-package com.MovieDBResponse.movieapp.model;
+package com.example.movieapp.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.movieapp.model.Movie;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -24,6 +23,7 @@ public class MovieDBResponse implements Parcelable
     @SerializedName("results")
     @Expose
     private List<Movie> Movies = null;
+
     public final static Parcelable.Creator<MovieDBResponse> CREATOR = new Creator<MovieDBResponse>() {
 
 
