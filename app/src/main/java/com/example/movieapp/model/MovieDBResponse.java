@@ -17,13 +17,13 @@ public class MovieDBResponse implements Parcelable
     private Integer page;
     @SerializedName("total_results")
     @Expose
-    private Integer totalResults;
+    private Integer totalMovies;
     @SerializedName("total_pages")
     @Expose
     private Integer totalPages;
     @SerializedName("results")
     @Expose
-    private List<Movie> results = null;
+    private List<Movie> Movies = null;
     public final static Parcelable.Creator<MovieDBResponse> CREATOR = new Creator<MovieDBResponse>() {
 
 
@@ -43,9 +43,9 @@ public class MovieDBResponse implements Parcelable
 
     protected MovieDBResponse(Parcel in) {
         this.page = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.totalResults = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.totalMovies = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalPages = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        in.readList(this.results, (com.example.movieapp.model.Movie.class.getClassLoader()));
+        in.readList(this.Movies, (com.example.movieapp.model.Movie.class.getClassLoader()));
     }
 
     public MovieDBResponse() {
@@ -60,11 +60,11 @@ public class MovieDBResponse implements Parcelable
     }
 
     public Integer getTotalResults() {
-        return totalResults;
+        return totalMovies;
     }
 
     public void setTotalResults(Integer totalResults) {
-        this.totalResults = totalResults;
+        this.totalMovies = totalResults;
     }
 
     public Integer getTotalPages() {
@@ -76,18 +76,18 @@ public class MovieDBResponse implements Parcelable
     }
 
     public List<Movie> getResults() {
-        return results;
+        return Movies;
     }
 
     public void setResults(List<Movie> results) {
-        this.results = results;
+        this.Movies = results;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(page);
-        dest.writeValue(totalResults);
+        dest.writeValue(totalMovies);
         dest.writeValue(totalPages);
-        dest.writeList(results);
+        dest.writeList(Movies);
     }
 
     public int describeContents() {
