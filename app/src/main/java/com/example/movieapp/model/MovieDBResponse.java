@@ -75,12 +75,12 @@ public class MovieDBResponse implements Parcelable
         this.totalPages = totalPages;
     }
 
-    public List<Movie> getResults() {
+    public List<Movie> getMovies() {
         return Movies;
     }
 
-    public void setResults(List<Movie> results) {
-        this.Movies = results;
+    public void setMovies(List<Movie> movies) {
+        this.Movies = movies;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
