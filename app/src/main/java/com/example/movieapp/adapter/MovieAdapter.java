@@ -1,6 +1,7 @@
 package com.example.movieapp.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.movieapp.MovieActivity;
 import com.example.movieapp.R;
 import com.example.movieapp.model.Movie;
 
@@ -65,6 +67,21 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             movieImage = (ImageView) itemView.findViewById(R.id.ivMovie);
             rate = (TextView) itemView.findViewById(R.id.tvRating);
             movieTitle=(TextView) itemView.findViewById(R.id.tvTitle);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+
+                    if(position != RecyclerView.NO_POSITION);
+
+                    Movie selectedMovie = movieArrayList.get(position);
+
+                    Intent intent = new Intent(context, MovieActivity.class);
+                    intent.putExtra("movie",selectedMovie);
+                    context.startActivity(intent);
+                }
+            });
         }
 
     }
