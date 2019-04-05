@@ -16,9 +16,11 @@ import com.example.movieapp.model.MovieDBResponse;
 
 import java.util.ArrayList;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Observable<MovieDBResponse> movieDBResponseObservable;
+    private CompositeDisposable compositeDisposable= new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,45 +38,82 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("TMBD Popular Movies Today");
 
-        getPopularMovies();
+        getPopularMoviesRx();
 
         swipeRefreshLayout=findViewById(R.id.swipe_layout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getPopularMovies();
+                getPopularMoviesRx();
             }
         });
     }
-    public void getPopularMovies(){
+    //enqueueメソッドでの非同期処理の場合
+//    public void getPopularMovies(){
+//        //インターフェースMovieDBResponse型のRetrofitインスタンス（BASEURL指定済）を作成
+//        MovieDataService movieDataService= RetrofitInstance.getService();
+//
+//        //インターフェースMovieDBResponseのgetPopularMoviesメソッドからapi_keyを取得したRetrofitインスタンスを
+//        //MovieDBResponseクラス型のCallクラスのインスタンスcallに入れる
+//        Call<MovieDBResponse> call = movieDataService.getPopularMovies(this.getString(R.string.api_key));
+//
+//        //非同期処理
+//        call.enqueue(new Callback<MovieDBResponse>() {
+//            @Override
+//            public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
+//
+//                MovieDBResponse movieDBResponse = response.body();
+//
+//                if (movieDBResponse != null && movieDBResponse.getMovies() != null);
+//
+//                    movies = (ArrayList<Movie>) movieDBResponse.getMovies();
+//                    showOnRecyclerView();
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<MovieDBResponse> call, Throwable t) {
+//
+//            }
+//        });
+//
+//    }
+    //RxJavaでの非同期処理の場合
+    public void getPopularMoviesRx(){
         //インターフェースMovieDBResponse型のRetrofitインスタンス（BASEURL指定済）を作成
         MovieDataService movieDataService= RetrofitInstance.getService();
 
         //インターフェースMovieDBResponseのgetPopularMoviesメソッドからapi_keyを取得したRetrofitインスタンスを
-        //MovieDBResponseクラス型のCallクラスのインスタンスcallに入れる
-        Call<MovieDBResponse> call = movieDataService.getPopularMovies(this.getString(R.string.api_key));
+        //MovieDBResponseクラス型のObservableクラスのインスタンスに入れる
+        movieDBResponseObservable = movieDataService.getPopularMoviesWithRx(this.getString(R.string.api_key));
 
-        //非同期処理
-        call.enqueue(new Callback<MovieDBResponse>() {
-            @Override
-            public void onResponse(Call<MovieDBResponse> call, Response<MovieDBResponse> response) {
+        compositeDisposable.add(
+        movieDBResponseObservable
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<MovieDBResponse>() {
+                    @Override
+                    public void onNext(MovieDBResponse movieDBResponse) {
 
-                MovieDBResponse movieDBResponse = response.body();
+                        movies = (ArrayList<Movie>) movieDBResponse.getMovies();
+                        showOnRecyclerView();
 
-                if (movieDBResponse != null && movieDBResponse.getMovies() != null);
+                    }
 
-                    movies = (ArrayList<Movie>) movieDBResponse.getMovies();
-                    showOnRecyclerView();
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }));
 
 
-            }
-
-            @Override
-            public void onFailure(Call<MovieDBResponse> call, Throwable t) {
-
-            }
-        });
 
     }
 
@@ -93,5 +134,20 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(movieAdapter);
         movieAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+        //RxJavaでの非同期処理の場合
+        compositeDisposable.clear();
+
+        //enqueueメソッドでの非同期処理の場合
+//        if (call != null) {
+//            if(call.isExecuted()) {
+//                call.cancel();
+//            }
+//        }
     }
 }
