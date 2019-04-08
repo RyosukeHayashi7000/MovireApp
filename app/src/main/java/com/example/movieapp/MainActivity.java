@@ -16,19 +16,19 @@ import com.example.movieapp.model.MovieDBResponse;
 
 import java.util.ArrayList;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Movie>  movies;
+    //private ArrayList<Movie>  movies;
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Observable<MovieDBResponse> movieDBResponseObservable;
+    private Single<MovieDBResponse> movieDBResponseSingle;
     private CompositeDisposable compositeDisposable= new CompositeDisposable();
 
     @Override
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 //        //インターフェースMovieDBResponse型のRetrofitインスタンス（BASEURL指定済）を作成
 //        MovieDataService movieDataService= RetrofitInstance.getService();
 //
-//        //インターフェースMovieDBResponseのgetPopularMoviesメソッドからapi_keyを取得したRetrofitインスタンスを
+//        //インターフェースmovieDataServiceのgetPopularMoviesメソッドからapi_keyを取得したRetrofitインスタンスを
 //        //MovieDBResponseクラス型のCallクラスのインスタンスcallに入れる
 //        Call<MovieDBResponse> call = movieDataService.getPopularMovies(this.getString(R.string.api_key));
 //
@@ -82,23 +82,27 @@ public class MainActivity extends AppCompatActivity {
 //    }
     //RxJavaでの非同期処理の場合
     public void getPopularMoviesRx(){
+
         //インターフェースMovieDBResponse型のRetrofitインスタンス（BASEURL指定済）を作成
         MovieDataService movieDataService= RetrofitInstance.getService();
 
-        //インターフェースMovieDBResponseのgetPopularMoviesメソッドからapi_keyを取得したRetrofitインスタンスを
+        //インターフェースMovieDataServiceのgetPopularMoviesWithRxメソッドからapi_keyを取得したRetrofitインスタンスを
         //MovieDBResponseクラス型のObservableクラスのインスタンスに入れる
-        movieDBResponseObservable = movieDataService.getPopularMoviesWithRx(this.getString(R.string.api_key));
+        movieDBResponseSingle = movieDataService.getPopularMoviesWithRx(this.getString(R.string.api_key));
 
         compositeDisposable.add(
-        movieDBResponseObservable
+        movieDBResponseSingle
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<MovieDBResponse>() {
+                .subscribeWith(new DisposableSingleObserver<MovieDBResponse>() {
+
                     @Override
-                    public void onNext(MovieDBResponse movieDBResponse) {
+                    public void onSuccess(MovieDBResponse movieDBResponse) {
+
+                        ArrayList<Movie>  movies;
 
                         movies = (ArrayList<Movie>) movieDBResponse.getMovies();
-                        showOnRecyclerView();
+                        showOnRecyclerView(movies);
 
                     }
 
@@ -107,32 +111,35 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    @Override
-                    public void onComplete() {
-
-                    }
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
                 }));
 
 
 
     }
 
-    private void showOnRecyclerView() {
+    private void showOnRecyclerView(ArrayList<Movie> items) {
 
         recyclerView=(RecyclerView) findViewById(R.id.rvMovies);
-        movieAdapter=new MovieAdapter(this,movies);
+        movieAdapter=new MovieAdapter(this,items);
 
         //スマホ画面の向きによって表示数の設定を変更
         if(this.getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
             //縦向きの場合は横２列
             recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+            recyclerView.setHasFixedSize(true);
         }else{
             //横向きの場合は横４列
             recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+            recyclerView.setHasFixedSize(true);
         }
 
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(movieAdapter);
+        //リストにデータを描画するためのアダプターのメソッド（更新）
         movieAdapter.notifyDataSetChanged();
     }
 
