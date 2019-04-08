@@ -2,7 +2,7 @@ package com.example.movieapp.Service;
 
 import com.example.movieapp.model.MovieDBResponse;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
@@ -14,5 +14,5 @@ public interface MovieDataService {
 
     //RxJavaでの非同期処理の場合
     @GET("movie/popular") //エンドポイント
-    Observable<MovieDBResponse> getPopularMoviesWithRx(@Query("api_key") String api_key);
+    Single<MovieDBResponse> getPopularMoviesWithRx(@Query("api_key") String api_key);
 }
