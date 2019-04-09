@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         MovieDataService movieDataService= RetrofitInstance.getService();
 
         //インターフェースMovieDataServiceのgetPopularMoviesWithRxメソッドからapi_keyを取得したRetrofitインスタンスを
-        //MovieDBResponseクラス型のObservableクラスのインスタンスに入れる
+        //MovieDBResponseクラス型のSingleクラスのインスタンスに入れる
         movieDBResponseSingle = movieDataService.getPopularMoviesWithRx(this.getString(R.string.api_key));
 
         compositeDisposable.add(
