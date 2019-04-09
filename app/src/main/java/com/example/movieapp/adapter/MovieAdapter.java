@@ -55,6 +55,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public int getItemCount() {
         return movieArrayList.size();
     }
+
+
     //ViewHolderの定義。Adapterがインフレートした1行分のレイアウトからViewの参照を取得し、publicフィールドで保持する。
     public class MovieViewHolder extends RecyclerView.ViewHolder{
 
