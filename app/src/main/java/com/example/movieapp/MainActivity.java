@@ -47,7 +47,17 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                /*リフレッシュした時の通信処理を書く*/
                 getPopularMoviesRx();
+
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        // 更新が終了したらインジケータ非表示
+//                        swipeRefreshLayout.setRefreshing(false);
+//                    }
+//                }, 2000);
+
             }
         });
     }
@@ -144,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         binding.rvMovies.setAdapter(movieAdapter);
         //リストにデータを描画するためのアダプターのメソッド（更新）
         movieAdapter.notifyDataSetChanged();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
