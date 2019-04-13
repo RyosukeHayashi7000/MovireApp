@@ -49,12 +49,21 @@ public class MovieActivity extends AppCompatActivity {
 
             String path = "https://image.tmdb.org/t/p/w500" + image;
 
+
             Glide.with(this)
                     .load(path)
                     .placeholder(R.drawable.loading)
                     .into(movieImage);
 
             getSupportActionBar().setTitle(movie.getTitle());
+
+            //DataBindingを使用した場合
+//            ContentMovieBinding binding = DataBindingUtil.setContentView(this,R.layout.content_movie);
+
+//            binding.tvMovieTitle.setText(movie.getTitle());
+//            binding.tvPlotsynopsis.setText(movie.getOverview());
+//            binding.tvMovieRating.setText(Double.toString(movie.getVoteAverage()));
+//            binding.tvReleaseDate.setText(movie.getReleaseDate());
 
             movieTitle.setText(movie.getTitle());
             movieSynopsis.setText(movie.getOverview());
