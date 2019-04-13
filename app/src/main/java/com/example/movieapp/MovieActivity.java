@@ -21,6 +21,8 @@ public class MovieActivity extends AppCompatActivity {
 
     private TextView movieTitle, movieSynopsis,movieRating,movieReleaseDate;
 
+    //private ContentMovieBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +30,8 @@ public class MovieActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //DataBindingを使用した場合
+        //binding = DataBindingUtil.setContentView(this,R.layout.content_movie);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -58,17 +62,17 @@ public class MovieActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(movie.getTitle());
 
             //DataBindingを使用した場合
-//            ContentMovieBinding binding = DataBindingUtil.setContentView(this,R.layout.content_movie);
+            //binding = DataBindingUtil.setContentView(this,R.layout.content_movie);
 
 //            binding.tvMovieTitle.setText(movie.getTitle());
 //            binding.tvPlotsynopsis.setText(movie.getOverview());
 //            binding.tvMovieRating.setText(Double.toString(movie.getVoteAverage()));
 //            binding.tvReleaseDate.setText(movie.getReleaseDate());
 
-            movieTitle.setText(movie.getTitle());
-            movieSynopsis.setText(movie.getOverview());
-            movieRating.setText(Double.toString(movie.getVoteAverage()));
-            movieReleaseDate.setText(movie.getReleaseDate());
+           movieTitle.setText(movie.getTitle());
+           movieSynopsis.setText(movie.getOverview());
+           movieRating.setText(Double.toString(movie.getVoteAverage()));
+           movieReleaseDate.setText(movie.getReleaseDate());
 
         }
     }
