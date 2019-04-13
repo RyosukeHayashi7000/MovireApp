@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         binding.rvMovies.setAdapter(movieAdapter);
         //リストにデータを描画するためのアダプターのメソッド（更新）
         movieAdapter.notifyDataSetChanged();
+        // 更新が終了したらインジケータ非表示
         swipeRefreshLayout.setRefreshing(false);
     }
 
