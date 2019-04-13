@@ -1,16 +1,17 @@
 package com.example.movieapp;
 
 import android.content.res.Configuration;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import com.example.movieapp.Service.MovieDataService;
 import com.example.movieapp.Service.RetrofitInstance;
 import com.example.movieapp.adapter.MovieAdapter;
+import com.example.movieapp.databinding.ActivityMainBinding;
 import com.example.movieapp.model.Movie;
 import com.example.movieapp.model.MovieDBResponse;
 
@@ -24,8 +25,9 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
+
     //private ArrayList<Movie>  movies;
-    private RecyclerView recyclerView;
+    //private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private Single<MovieDBResponse> movieDBResponseSingle;
@@ -123,22 +125,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void showOnRecyclerView(ArrayList<Movie> items) {
 
-        recyclerView=(RecyclerView) findViewById(R.id.rvMovies);
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        //recyclerView=(RecyclerView) findViewById(R.id.rvMovies);
         movieAdapter=new MovieAdapter(this,items);
 
         //スマホ画面の向きによって表示数の設定を変更
         if(this.getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
             //縦向きの場合は横２列
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-            recyclerView.setHasFixedSize(true);
+            binding.rvMovies.setLayoutManager(new GridLayoutManager(this, 2));
+            binding.rvMovies.setHasFixedSize(true);
         }else{
             //横向きの場合は横４列
-            recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-            recyclerView.setHasFixedSize(true);
+            binding.rvMovies.setLayoutManager(new GridLayoutManager(this, 4));
+            binding.rvMovies.setHasFixedSize(true);
         }
 
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(movieAdapter);
+        binding.rvMovies.setItemAnimator(new DefaultItemAnimator());
+        binding.rvMovies.setAdapter(movieAdapter);
         //リストにデータを描画するためのアダプターのメソッド（更新）
         movieAdapter.notifyDataSetChanged();
     }
