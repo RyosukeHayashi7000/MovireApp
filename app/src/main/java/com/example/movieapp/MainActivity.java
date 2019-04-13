@@ -25,11 +25,11 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private ActivityMainBinding binding;
     //private ArrayList<Movie>  movies;
     //private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    //private SwipeRefreshLayout swipeRefreshLayout;
     private Single<MovieDBResponse> movieDBResponseSingle;
     private CompositeDisposable compositeDisposable= new CompositeDisposable();
 
@@ -38,13 +38,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+
         getSupportActionBar().setTitle("TMBD Popular Movies Today");
 
         getPopularMoviesRx();
 
-        swipeRefreshLayout=findViewById(R.id.swipe_layout);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        //swipeRefreshLayout=findViewById(R.id.swipe_layout);
+        binding.swipeLayout.setColorSchemeResources(R.color.colorPrimary);
+        binding.swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 /*リフレッシュした時の通信処理を書く*/
@@ -135,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void showOnRecyclerView(ArrayList<Movie> items) {
 
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
+        //ActivityMainBinding binding = DataBindingUtil.setContentView(this,R.layout.activity_main);
         //recyclerView=(RecyclerView) findViewById(R.id.rvMovies);
         movieAdapter=new MovieAdapter(this,items);
 
@@ -155,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         //リストにデータを描画するためのアダプターのメソッド（更新）
         movieAdapter.notifyDataSetChanged();
         // 更新が終了したらインジケータ非表示
-        swipeRefreshLayout.setRefreshing(false);
+        binding.swipeLayout.setRefreshing(false);
     }
 
     @Override
